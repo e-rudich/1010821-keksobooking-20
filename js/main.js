@@ -2,23 +2,26 @@
 
 var OFFER_TITLES = ['Для большой семьи', 'Квартира с шикарным видом', 'Пентхаус в центре', 'Уютное гнездышко для молодоженов'];
 var OFFER_TYPES = ['palace', 'flat', 'house', 'bungalo'];
-var CHECK_IN = ['12:00', '13:00', '14:00'];
-var CHECK_OUT = ['12:00', '13:00', '14:00'];
-var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner', 'description'];
-var OFFER_DESCRIPTION = ['Великолепная квартира-студия в центре Токио. Подходит как туристам, так и бизнесменам. Квартира полностью укомплектована и недавно отремонтирована.', 'Второе описание', 'Третье описание'];
+var CHECK_INS = ['12:00', '13:00', '14:00'];
+var CHECK_OUTS = ['12:00', '13:00', '14:00'];
+var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var OFFER_DESCRIPTIONS = ['Великолепная квартира-студия в центре Токио. Подходит как туристам, так и бизнесменам. Квартира полностью укомплектована и недавно отремонтирована.', 'Второе описание', 'Третье описание'];
 var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var OFFERS_NUMBER = 8;
 var GUESTS_MAX = 6;
 var ROOMS_MAX = 10;
 var PRICE_MAX = 50000;
+
+var LOCATION_X_MIN = 0;
 var LOCATION_Y_MIN = 130;
 var LOCATION_Y_MAX = 630;
 
-var PIN_WIDTH = 40;
-var PIN_HEIGHT = 60;
+var locationXMax = document.querySelector('.map').offsetWidth;
+
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
 
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
 
 // Получение случайного числа и элемента
 var getRandomNumber = function (min, max) {
@@ -31,33 +34,39 @@ var getRandomElement = function (items) {
 };
 
 // Перемешивание массива
-
 var shuffleItems = function (items) {
-  for (var i = items.length - 1; i > 0; i--) {
-    var swapIndex = Math.floor(Math.random() * (i + 1));
-    var currentIndex = items[i];
-    var indexToSwap = items[swapIndex];
-    items[i] = indexToSwap;
-    items[swapIndex] = currentIndex;
+  var itemsClone = items.slice();
+  for (var i = itemsClone.length - 1; i > 0; i--) {
+    var swapIndex = getRandomNumber(0, i);
+    var currentItem = itemsClone[i];
+    var indexToSwap = itemsClone[swapIndex];
+    itemsClone[i] = indexToSwap;
+    itemsClone[swapIndex] = currentItem;
   }
-  return items;
+  return itemsClone;
 };
 
-// Получение случайной длины массива
-
-var getRandomLength = function (items) {
-  items.length = getRandomNumber(1, items.length);
-  return items;
+// Перемешать и отрезать методом слайс
+var shuffleAndSliceItems = function (items) {
+  var shuffledItems = shuffleItems(items);
+  var slicedItems = shuffledItems.slice(0, getRandomNumber(1, items.length));
+  return slicedItems;
 };
 
+// Показать карту
+var showMap = function () {
+  map.classList.remove('map--faded');
+};
+
+// Сгенерировать массив объявлений
 var generateOffers = function (count) {
   var offers = [];
-  for (var i = 0; i < count; i++) {
-    var locationX = getRandomNumber(0, map.offsetWidth);
+  for (var i = 1; i <= count; i++) {
+    var locationX = getRandomNumber(LOCATION_X_MIN, locationXMax);
     var locationY = getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX);
     var offer = {
       author: {
-        avatar: 'img/avatars/user0' + (i + 1) + '.png'
+        avatar: 'img/avatars/user0' + (i) + '.png'
       },
       offer: {
         title: getRandomElement(OFFER_TITLES),
@@ -66,11 +75,11 @@ var generateOffers = function (count) {
         type: getRandomElement(OFFER_TYPES),
         rooms: getRandomNumber(0, ROOMS_MAX),
         guests: getRandomNumber(0, GUESTS_MAX),
-        checkin: getRandomElement(CHECK_IN),
-        checkout: getRandomElement(CHECK_OUT),
-        features: shuffleItems(getRandomLength(OFFER_FEATURES)),
-        description: getRandomElement(OFFER_DESCRIPTION),
-        photos: shuffleItems(getRandomLength(OFFER_PHOTOS))
+        checkin: getRandomElement(CHECK_INS),
+        checkout: getRandomElement(CHECK_OUTS),
+        features: shuffleAndSliceItems(OFFER_FEATURES),
+        description: getRandomElement(OFFER_DESCRIPTIONS),
+        photos: shuffleAndSliceItems(OFFER_PHOTOS)
       },
       location: {
         x: locationX,
@@ -82,6 +91,7 @@ var generateOffers = function (count) {
   return offers;
 };
 
+// Отрисовать метку объявления
 var renderOfferPin = function (offerPin) {
   var offerPinTemplate = document.querySelector('#pin')
   .content
@@ -91,11 +101,12 @@ var renderOfferPin = function (offerPin) {
   offerPinElement.querySelector('img').src = offerPin.author.avatar;
   offerPinElement.querySelector('img').alt = offerPin.offer.title;
   offerPinElement.style.left = (offerPin.location.x - PIN_WIDTH / 2) + 'px';
-  offerPinElement.style.top = (offerPin.location.y + PIN_HEIGHT) + 'px';
+  offerPinElement.style.top = (offerPin.location.y - PIN_HEIGHT) + 'px';
 
   return offerPinElement;
 };
 
+// Добавить метки в разметку
 var renderOfferPins = function (offers) {
   var mapPins = map.querySelector('.map__pins');
   var fragment = document.createDocumentFragment();
@@ -107,3 +118,4 @@ var renderOfferPins = function (offers) {
 
 var offers = generateOffers(OFFERS_NUMBER);
 renderOfferPins(offers);
+showMap();
