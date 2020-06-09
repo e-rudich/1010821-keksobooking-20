@@ -12,14 +12,14 @@ var GUESTS_MAX = 6;
 var ROOMS_MAX = 10;
 var PRICE_MAX = 50000;
 
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
+
 var LOCATION_X_MIN = 0;
 var LOCATION_Y_MIN = 130;
 var LOCATION_Y_MAX = 630;
 
 var locationXMax = document.querySelector('.map').offsetWidth;
-
-var PIN_WIDTH = 50;
-var PIN_HEIGHT = 70;
 
 var map = document.querySelector('.map');
 
@@ -39,8 +39,7 @@ var shuffleItems = function (items) {
   for (var i = itemsClone.length - 1; i > 0; i--) {
     var swapIndex = getRandomNumber(0, i);
     var currentItem = itemsClone[i];
-    var indexToSwap = itemsClone[swapIndex];
-    itemsClone[i] = indexToSwap;
+    itemsClone[i] = itemsClone[swapIndex];
     itemsClone[swapIndex] = currentItem;
   }
   return itemsClone;
@@ -49,8 +48,7 @@ var shuffleItems = function (items) {
 // Перемешать и отрезать методом слайс
 var shuffleAndSliceItems = function (items) {
   var shuffledItems = shuffleItems(items);
-  var slicedItems = shuffledItems.slice(0, getRandomNumber(1, items.length));
-  return slicedItems;
+  return shuffledItems.slice(0, getRandomNumber(1, items.length));
 };
 
 // Показать карту
@@ -66,7 +64,7 @@ var generateOffers = function (count) {
     var locationY = getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX);
     var offer = {
       author: {
-        avatar: 'img/avatars/user0' + (i) + '.png'
+        avatar: 'img/avatars/user0' + i + '.png'
       },
       offer: {
         title: getRandomElement(OFFER_TITLES),
@@ -100,8 +98,8 @@ var renderOfferPin = function (offerPin) {
 
   offerPinElement.querySelector('img').src = offerPin.author.avatar;
   offerPinElement.querySelector('img').alt = offerPin.offer.title;
-  offerPinElement.style.left = (offerPin.location.x - PIN_WIDTH / 2) + 'px';
-  offerPinElement.style.top = (offerPin.location.y - PIN_HEIGHT) + 'px';
+  offerPinElement.style.left = offerPin.location.x - PIN_WIDTH / 2 + 'px';
+  offerPinElement.style.top = offerPin.location.y - PIN_HEIGHT + 'px';
 
   return offerPinElement;
 };
