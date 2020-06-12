@@ -10,7 +10,6 @@ var OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http:
 var OFFER_ROOMS = [1, 2, 3, 100];
 var OFFER_GUESTS = [1, 2, 3, 0];
 var OFFERS_NUMBER = 8;
-// var GUESTS_MAX = 6;
 var PRICE_MAX = 1000000;
 
 var OFFER_PHOTO_WIDTH = 45;
@@ -162,17 +161,15 @@ var switchRooms = function (digit) {
   var textRooms = '';
   switch (digit) {
     case 1:
-      textRooms = digit + ' комната для ';
+      textRooms = digit + ' комната';
       break;
     case 2:
     case 3:
-      textRooms = digit + ' комнаты для ';
-      break;
-    case 100:
-      textRooms = digit + ' комнат ';
+    case 4:
+      textRooms = digit + ' комнаты';
       break;
     default:
-      textRooms = digit + ' комнат для ';
+      textRooms = digit + ' комнат';
   }
   return textRooms;
 };
@@ -183,9 +180,6 @@ var switchGuests = function (digit) {
   switch (digit) {
     case 1:
       textGuests = digit + ' гостя';
-      break;
-    case 0:
-      textGuests = 'не для гостей';
       break;
     default:
       textGuests = digit + ' гостей';
@@ -202,6 +196,20 @@ var addCardElementStyle = function (offerElement, selector) {
   }
 };
 
+// Функция добавляения элемента в карточку при наличии с массивом
+var addCardElementsArray = function (offerElement, container, renderFunction) {
+  if (offerElement) {
+    renderFunction(container, offerElement);
+  } else {
+    container.style.display = 'none';
+  }
+};
+
+// Функция скрытия элемента
+var hideElement = function (selector) {
+  offerCardElements.querySelector(selector).style.display = 'none';
+};
+
 // Сгенерировать карточку объявления
 var renderOfferCard = function (offerCard) {
 
@@ -209,46 +217,37 @@ var renderOfferCard = function (offerCard) {
   addCardElementStyle(offerCard.offer.address, '.popup__text--address');
   addCardElementStyle(offerCard.offer.description, '.popup__description');
 
+  addCardElementsArray(offerCard.offer.features, offerCardFeatures, renderFeatures);
+  addCardElementsArray(offerCard.offer.photos, offerCardPhotos, renderPhotos);
+
   if (offerCard.offer.price) {
     offerCardElements.querySelector('.popup__text--price').textContent = offerCard.offer.price + '₽/ночь';
   } else {
-    offerCardElements.querySelector('.popup__text--price').style.display = 'none';
+    hideElement('.popup__text--price');
   }
 
   if (offerCard.offer.type) {
     offerCardElements.querySelector('.popup__type').textContent = roomTypes[offerCard.offer.type];
   } else {
-    offerCardElements.querySelector('.popup__type').style.display = 'none';
+    hideElement('.popup__type');
   }
 
   if (offerCard.offer.rooms || offerCard.offer.guests) {
-    offerCardElements.querySelector('.popup__text--capacity').textContent = switchRooms(offerCard.offer.rooms) + switchGuests(offerCard.offer.guests);
+    offerCardElements.querySelector('.popup__text--capacity').textContent = switchRooms(offerCard.offer.rooms) + ' для ' + switchGuests(offerCard.offer.guests);
   } else {
-    offerCardElements.querySelector('.popup__text--capacity').style.display = 'none';
+    hideElement('.popup__text--capacity');
   }
 
   if (offerCard.offer.checkin || offerCard.offer.checkout) {
-    offerCardElements.querySelector('.popup__text--time').textContent = 'Заезд после ' + offerCard.offer.checkin + ', выезд до ' + offerCard.offer.checkout;
+    offerCardElements.querySelector('.popup__text--time').textContent = 'Заезд после ' + offerCard.offer.checkin + ', выезд до ' + switchGuests(offerCard.offer.checkout);
   } else {
-    offerCardElements.querySelector('.popup__text--time').style.display = 'none';
-  }
-
-  if (offerCard.offer.features) {
-    renderFeatures(offerCardFeatures, offerCard.offer.features);
-  } else {
-    offerCardFeatures.style.display = 'none';
-  }
-
-  if (offerCard.offer.photos) {
-    renderPhotos(offerCardPhotos, offerCard.offer.photos);
-  } else {
-    offerCardPhotos.style.display = 'none';
+    hideElement('.popup__text--time');
   }
 
   if (offerCard.author.avatar) {
     offerCardElements.querySelector('.popup__avatar').src = offerCard.author.avatar;
   } else {
-    offerCardElements.querySelector('.popup__avatar').style.display = 'none';
+    hideElement('.popup__avatar');
   }
 
   map.insertBefore(offerCardElements, map.querySelector('.map__filters-container'));
