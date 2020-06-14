@@ -185,7 +185,7 @@ var addCardElementStyle = function (offerElement, selector) {
   if (offerElement) {
     offerCardElements.querySelector(selector).textContent = offerElement;
   } else {
-    hideElement(selector);
+    hideOfferCardElement(selector);
   }
 };
 
@@ -203,7 +203,7 @@ var addCardElementPrice = function (offerElement, selector) {
   if (offerElement) {
     offerCardElements.querySelector(selector).textContent = offerElement + '₽/ночь';
   } else {
-    hideElement(selector);
+    hideOfferCardElement(selector);
   }
 };
 
@@ -212,7 +212,7 @@ var addCardElementCapacity = function (offerElementRooms, offerElementGuests, se
   if (offerElementRooms || offerElementGuests) {
     offerCardElements.querySelector(selector).textContent = switchRooms(offerElementRooms) + ' для ' + switchGuests(offerElementGuests);
   } else {
-    hideElement(selector);
+    hideOfferCardElement(selector);
   }
 };
 
@@ -221,7 +221,7 @@ var addCardElementAvatar = function (offerElement, selector) {
   if (offerElement) {
     offerCardElements.querySelector(selector).src = offerElement;
   } else {
-    hideElement(selector);
+    hideOfferCardElement(selector);
   }
 };
 
@@ -230,7 +230,7 @@ var addCardElementType = function (offerElement, selector) {
   if (offerElement) {
     offerCardElements.querySelector(selector).textContent = roomTypes[offerElement];
   } else {
-    hideElement(selector);
+    hideOfferCardElement(selector);
   }
 };
 
@@ -239,12 +239,12 @@ var addCardElementTimes = function (offerElementCheckin, offerElementCheckOut, s
   if (offerElementCheckin || offerElementCheckOut) {
     offerCardElements.querySelector(selector).textContent = 'Заезд после ' + offerElementCheckin + ', выезд до ' + offerElementCheckOut;
   } else {
-    hideElement(selector);
+    hideOfferCardElement(selector);
   }
 };
 
 // Функция скрытия элемента
-var hideElement = function (selector) {
+var hideOfferCardElement = function (selector) {
   offerCardElements.querySelector(selector).style.display = 'none';
 };
 
