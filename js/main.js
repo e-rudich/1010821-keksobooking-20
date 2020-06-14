@@ -158,33 +158,26 @@ var roomTypes = {
 
 // Подбор окончаний у комнат
 var switchRooms = function (digit) {
-  var textRooms = '';
   switch (digit) {
     case 1:
-      textRooms = digit + ' комната';
-      break;
+      return digit + ' комната';
     case 2:
     case 3:
     case 4:
-      textRooms = digit + ' комнаты';
-      break;
+      return digit + ' комнаты';
     default:
-      textRooms = digit + ' комнат';
+      return digit + ' комнат';
   }
-  return textRooms;
 };
 
 // Подбор окончаний у гостей
 var switchGuests = function (digit) {
-  var textGuests = '';
   switch (digit) {
     case 1:
-      textGuests = digit + ' гостя';
-      break;
+      return digit + ' гостя';
     default:
-      textGuests = digit + ' гостей';
+      return digit + ' гостей';
   }
-  return textGuests;
 };
 
 // Функция добавляения элемента в карточку при наличии
@@ -192,7 +185,7 @@ var addCardElementStyle = function (offerElement, selector) {
   if (offerElement) {
     offerCardElements.querySelector(selector).textContent = offerElement;
   } else {
-    offerCardElements.querySelector(selector).style.display = 'none';
+    hideElement(selector);
   }
 };
 
@@ -202,6 +195,51 @@ var addCardElementsArray = function (offerElement, container, renderFunction) {
     renderFunction(container, offerElement);
   } else {
     container.style.display = 'none';
+  }
+};
+
+// Функция добавления цены
+var addCardElementPrice = function (offerElement, selector) {
+  if (offerElement) {
+    offerCardElements.querySelector(selector).textContent = offerElement + '₽/ночь';
+  } else {
+    hideElement(selector);
+  }
+};
+
+// Функция добавления комнат и гостей
+var addCardElementCapacity = function (offerElementRooms, offerElementGuests, selector) {
+  if (offerElementRooms || offerElementGuests) {
+    offerCardElements.querySelector(selector).textContent = switchRooms(offerElementRooms) + ' для ' + switchGuests(offerElementGuests);
+  } else {
+    hideElement(selector);
+  }
+};
+
+// Функция добавления аватара
+var addCardElementAvatar = function (offerElement, selector) {
+  if (offerElement) {
+    offerCardElements.querySelector(selector).src = offerElement;
+  } else {
+    hideElement(selector);
+  }
+};
+
+// Функция добавления типа жилья
+var addCardElementType = function (offerElement, selector) {
+  if (offerElement) {
+    offerCardElements.querySelector(selector).textContent = roomTypes[offerElement];
+  } else {
+    hideElement(selector);
+  }
+};
+
+// Функция добавления времени
+var addCardElementTimes = function (offerElementCheckin, offerElementCheckOut, selector) {
+  if (offerElementCheckin || offerElementCheckOut) {
+    offerCardElements.querySelector(selector).textContent = 'Заезд после ' + offerElementCheckin + ', выезд до ' + offerElementCheckOut;
+  } else {
+    hideElement(selector);
   }
 };
 
@@ -216,39 +254,16 @@ var renderOfferCard = function (offerCard) {
   addCardElementStyle(offerCard.offer.title, '.popup__title');
   addCardElementStyle(offerCard.offer.address, '.popup__text--address');
   addCardElementStyle(offerCard.offer.description, '.popup__description');
+  addCardElementPrice(offerCard.offer.price, '.popup__text--price');
+  addCardElementType(offerCard.offer.type, '.popup__type');
 
   addCardElementsArray(offerCard.offer.features, offerCardFeatures, renderFeatures);
   addCardElementsArray(offerCard.offer.photos, offerCardPhotos, renderPhotos);
 
-  if (offerCard.offer.price) {
-    offerCardElements.querySelector('.popup__text--price').textContent = offerCard.offer.price + '₽/ночь';
-  } else {
-    hideElement('.popup__text--price');
-  }
+  addCardElementCapacity(offerCard.offer.rooms, offerCard.offer.guests, '.popup__text--capacity');
+  addCardElementTimes(offerCard.offer.checkin, offerCard.offer.checkout, '.popup__text--time');
 
-  if (offerCard.offer.type) {
-    offerCardElements.querySelector('.popup__type').textContent = roomTypes[offerCard.offer.type];
-  } else {
-    hideElement('.popup__type');
-  }
-
-  if (offerCard.offer.rooms || offerCard.offer.guests) {
-    offerCardElements.querySelector('.popup__text--capacity').textContent = switchRooms(offerCard.offer.rooms) + ' для ' + switchGuests(offerCard.offer.guests);
-  } else {
-    hideElement('.popup__text--capacity');
-  }
-
-  if (offerCard.offer.checkin || offerCard.offer.checkout) {
-    offerCardElements.querySelector('.popup__text--time').textContent = 'Заезд после ' + offerCard.offer.checkin + ', выезд до ' + switchGuests(offerCard.offer.checkout);
-  } else {
-    hideElement('.popup__text--time');
-  }
-
-  if (offerCard.author.avatar) {
-    offerCardElements.querySelector('.popup__avatar').src = offerCard.author.avatar;
-  } else {
-    hideElement('.popup__avatar');
-  }
+  addCardElementAvatar(offerCard.author.avatar, '.popup__avatar');
 
   map.insertBefore(offerCardElements, map.querySelector('.map__filters-container'));
 };
