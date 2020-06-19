@@ -291,9 +291,25 @@ var getPinCoordinate = function (isActive) {
   return coordinateX + ', ' + coordinateY;
 };
 
+// Неактивное состояние полей и активация
+var adFormFieldsets = adForm.querySelectorAll('fieldset');
+
+var disableFieldsets = function () {
+  adFormFieldsets.forEach(function (fieldset) {
+    fieldset.setAttribute('disabled', 'disabled');
+  });
+};
+
+var enableFieldsets = function () {
+  adFormFieldsets.forEach(function (fieldset) {
+    fieldset.removeAttribute('disabled', 'disabled');
+  });
+};
+
 // Спрятать карту
 var disablePage = function () {
   addressInput.value = getPinCoordinate(false);
+  disableFieldsets();
 };
 
 // Показать карту
@@ -308,6 +324,7 @@ var activatePage = function () {
     if (evt.which === 1) {
       enablePage();
       renderOfferPins(offers);
+      enableFieldsets();
     }
   });
 
@@ -315,6 +332,7 @@ var activatePage = function () {
     if (evt.key === 'Enter') {
       enablePage();
       renderOfferPins(offers);
+      enableFieldsets();
     }
   });
 };
@@ -370,9 +388,8 @@ var onCapacityChange = function () {
 capacitySelect.addEventListener('change', onCapacityChange);
 roomsSelect.addEventListener('change', onCapacityChange);
 
-validateRooms();
-
 var offers = generateOffers(OFFERS_NUMBER);
 disablePage();
 activatePage();
 // renderOfferCard(offers[0]);
+validateRooms();
