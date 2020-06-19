@@ -38,6 +38,14 @@ var map = document.querySelector('.map');
 var mainPin = map.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
 var addressInput = adForm.querySelector('input[name="address"]');
+var titleInput = adForm.querySelector('input[name="title"]');
+
+// var typeInput = adForm.querySelector('input[name="type"]');
+// var priceInput = adForm.querySelector('input[name="price"]');
+// var checkinSelect = adForm.querySelector('select[name="timein"]');
+// var checkoutSelect = adForm.querySelector('select[name="timeout"]');
+var roomsSelect = adForm.querySelector('select[name="rooms"]');
+var capacitySelect = adForm.querySelector('select[name="capacity"]');
 
 // Получение случайного числа и элемента
 var getRandomNumber = function (min, max) {
@@ -132,6 +140,7 @@ var renderOfferPins = function (offers) {
 //     var offerCardFeature = document.createElement('li');
 //     fragment.appendChild(offerCardFeature);
 //     offerCardFeature.classList.add('popup__feature', 'popup__feature--' + feature);
+//     container.appendChild(offerCardFeature);
 //   });
 // };
 
@@ -294,8 +303,6 @@ var enablePage = function () {
   addressInput.value = getPinCoordinate(true);
 };
 
-disablePage();
-
 var activatePage = function () {
   mainPin.addEventListener('mousedown', function (evt) {
     if (evt.which === 1) {
@@ -312,8 +319,60 @@ var activatePage = function () {
   });
 };
 
+// Сообщения при валидации заголовка
+titleInput.addEventListener('input', function () {
+  if (titleInput.validity.tooShort) {
+    titleInput.setCustomValidity('Название слишком короткое. Введите не меньше 30 символов');
+  } else if (titleInput.validity.tooLong) {
+    titleInput.setCustomValidity('Название сдишком длинное. Введите не больше 100 символов');
+  } else if (titleInput.validity.valueMissing) {
+    titleInput.setCustomValidity('Добавьте заголовок вашему объявлению');
+  } else {
+    titleInput.setCustomValidity('');
+  }
+});
+
+// Словарь количества гостей и текстов ошибки
+var capacityRoomsError = {
+  1: {
+    guests: ['1'],
+    errorText: 'Можно разместить только 1 гостя'
+  },
+  2: {
+    guests: ['1', '2'],
+    errorText: 'Можно разместить только 1 или 2 гостей'
+  },
+  3: {
+    guests: ['1', '2', '3'],
+    errorText: 'Можно разместить 1, 2 или 3 гостей'
+  },
+  100: {
+    guests: ['0'],
+    errorText: 'Не для гостей'
+  }
+};
+
+var validateRooms = function () {
+  var guestsCount = capacitySelect.value;
+  var roomsCount = roomsSelect.value;
+
+  if (capacityRoomsError[roomsCount].guests.includes(guestsCount)) {
+    roomsSelect.setCustomValidity('');
+  } else {
+    roomsSelect.setCustomValidity(capacityRoomsError[roomsCount].errorText);
+  }
+};
+
+var onCapacityChange = function () {
+  validateRooms();
+};
+
+capacitySelect.addEventListener('change', onCapacityChange);
+roomsSelect.addEventListener('change', onCapacityChange);
+
+validateRooms();
 
 var offers = generateOffers(OFFERS_NUMBER);
-
+disablePage();
 activatePage();
 // renderOfferCard(offers[0]);
