@@ -19,8 +19,8 @@ var PRICE_MAX = 1000000;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 
-var MAIN_PIN_WIDTH = 65;
-var MAIN_PIN_HEIGHT = 65;
+var MAIN_PIN_WIDTH = 62;
+var MAIN_PIN_HEIGHT = 62;
 var MAIN_PIN_TIP_HEIGHT = 22;
 
 var LOCATION_X_MIN = 0;
@@ -37,6 +37,7 @@ var map = document.querySelector('.map');
 // var offerCardFeatures = offerCardElements.querySelector('.popup__features');
 var mainPin = map.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
+var filtersForm = document.querySelector('.map__filters');
 var addressInput = adForm.querySelector('input[name="address"]');
 var titleInput = adForm.querySelector('input[name="title"]');
 
@@ -131,6 +132,14 @@ var renderOfferPins = function (offers) {
     fragment.appendChild(renderOfferPin(offer));
   });
   mapPins.appendChild(fragment);
+};
+
+// Очистить пины
+var clearPins = function () {
+  var renderedPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
+  renderedPins.forEach(function (pin) {
+    pin.remove();
+  });
 };
 
 // var renderFeatures = function (container, features) {
@@ -280,61 +289,68 @@ var renderOfferPins = function (offers) {
 // };
 
 // Вычисление адреса на формы
-var getPinCoordinate = function (isActive) {
+var insertDefaultAddressDisabled = function () {
   var coordinateX = Math.round(mainPin.offsetLeft + MAIN_PIN_WIDTH / 2);
   var coordinateY = Math.round(mainPin.offsetTop + MAIN_PIN_HEIGHT / 2);
 
-  if (isActive) {
-    coordinateY = Math.round(mainPin.offsetTop + MAIN_PIN_HEIGHT + MAIN_PIN_TIP_HEIGHT);
-  }
+  addressInput.value = coordinateX + ', ' + coordinateY;
+};
 
-  return coordinateX + ', ' + coordinateY;
+var insertDefaultAddressEnabled = function () {
+  var coordinateX = Math.round(mainPin.offsetLeft + MAIN_PIN_WIDTH / 2);
+  var coordinateY = Math.round(mainPin.offsetTop + MAIN_PIN_HEIGHT + MAIN_PIN_TIP_HEIGHT);
+
+  addressInput.value = coordinateX + ', ' + coordinateY;
 };
 
 // Неактивное состояние полей и активация
 var adFormFieldsets = adForm.querySelectorAll('fieldset');
+var filtersFormElements = filtersForm.querySelectorAll('input, select');
 
-var disableFieldsets = function () {
-  adFormFieldsets.forEach(function (fieldset) {
-    fieldset.setAttribute('disabled', 'disabled');
+var disableFormElements = function (elements) {
+  elements.forEach(function (element) {
+    element.setAttribute('disabled', 'disabled');
   });
 };
 
-var enableFieldsets = function () {
-  adFormFieldsets.forEach(function (fieldset) {
-    fieldset.removeAttribute('disabled', 'disabled');
+var enableFormElements = function (elements) {
+  elements.forEach(function (element) {
+    element.removeAttribute('disabled');
   });
 };
 
 // Спрятать карту
 var disablePage = function () {
-  addressInput.value = getPinCoordinate(false);
-  disableFieldsets();
+  insertDefaultAddressDisabled();
+  disableFormElements(adFormFieldsets);
+  disableFormElements(filtersFormElements);
+  mainPin.addEventListener('keydown', onPinPress);
+  mainPin.addEventListener('mousedown', onPinClick);
+  clearPins();
 };
 
 // Показать карту
 var enablePage = function () {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
-  addressInput.value = getPinCoordinate(true);
+  insertDefaultAddressEnabled();
+  renderOfferPins(offers);
+  enableFormElements(adFormFieldsets);
+  enableFormElements(filtersFormElements);
+  mainPin.removeEventListener('keydown', onPinPress);
+  mainPin.removeEventListener('mousedown', onPinClick);
 };
 
-var activatePage = function () {
-  mainPin.addEventListener('mousedown', function (evt) {
-    if (evt.which === 1) {
-      enablePage();
-      renderOfferPins(offers);
-      enableFieldsets();
-    }
-  });
+var onPinPress = function (evt) {
+  if (evt.key === 'Enter') {
+    enablePage();
+  }
+};
 
-  mainPin.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Enter') {
-      enablePage();
-      renderOfferPins(offers);
-      enableFieldsets();
-    }
-  });
+var onPinClick = function (evt) {
+  if (evt.button === 0) {
+    enablePage();
+  }
 };
 
 // Сообщения при валидации заголовка
@@ -390,6 +406,5 @@ roomsSelect.addEventListener('change', onCapacityChange);
 
 var offers = generateOffers(OFFERS_NUMBER);
 disablePage();
-activatePage();
 // renderOfferCard(offers[0]);
 validateRooms();
