@@ -19,9 +19,9 @@ var PRICE_MAX = 1000000;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 
-var MAIN_PIN_WIDTH = 62;
-var MAIN_PIN_HEIGHT = 62;
-var MAIN_PIN_TIP_HEIGHT = 22;
+var MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_HEIGHT = 65;
+var MAIN_PIN_ACTIVE_HEIGHT = 84;
 
 var LOCATION_X_MIN = 0;
 var LOCATION_Y_MIN = 130;
@@ -298,7 +298,7 @@ var insertDefaultAddressDisabled = function () {
 
 var insertDefaultAddressEnabled = function () {
   var coordinateX = Math.round(mainPin.offsetLeft + MAIN_PIN_WIDTH / 2);
-  var coordinateY = Math.round(mainPin.offsetTop + MAIN_PIN_HEIGHT + MAIN_PIN_TIP_HEIGHT);
+  var coordinateY = Math.round(mainPin.offsetTop + MAIN_PIN_ACTIVE_HEIGHT);
 
   addressInput.value = coordinateX + ', ' + coordinateY;
 };
@@ -325,7 +325,7 @@ var disablePage = function () {
   disableFormElements(adFormFieldsets);
   disableFormElements(filtersFormElements);
   mainPin.addEventListener('keydown', onPinPress);
-  mainPin.addEventListener('mousedown', onPinClick);
+  mainPin.addEventListener('mousedown', onPinMousedown);
   clearPins();
 };
 
@@ -338,7 +338,7 @@ var enablePage = function () {
   enableFormElements(adFormFieldsets);
   enableFormElements(filtersFormElements);
   mainPin.removeEventListener('keydown', onPinPress);
-  mainPin.removeEventListener('mousedown', onPinClick);
+  mainPin.removeEventListener('mousedown', onPinMousedown);
 };
 
 var onPinPress = function (evt) {
@@ -347,7 +347,7 @@ var onPinPress = function (evt) {
   }
 };
 
-var onPinClick = function (evt) {
+var onPinMousedown = function (evt) {
   if (evt.button === 0) {
     enablePage();
   }
