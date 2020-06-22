@@ -460,19 +460,19 @@ var onCapacityChange = function () {
   validateRooms();
 };
 
-var validateTimeIn = function () {
+var onCheckinChange = function () {
   checkoutSelect.value = checkinSelect.value;
 };
 
-var validateTimeOut = function () {
+var onCheckoutChange = function () {
   checkinSelect.value = checkoutSelect.value;
 };
 
 capacitySelect.addEventListener('change', onCapacityChange);
 roomsSelect.addEventListener('change', onCapacityChange);
 typeSelect.addEventListener('change', onTypeChange);
-checkinSelect.addEventListener('change', validateTimeIn);
-checkoutSelect.addEventListener('change', validateTimeOut);
+checkinSelect.addEventListener('change', onCheckinChange);
+checkoutSelect.addEventListener('change', onCheckoutChange);
 
 var offers = generateOffers(OFFERS_NUMBER);
 disablePage();
