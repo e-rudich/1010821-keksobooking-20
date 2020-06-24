@@ -477,3 +477,4 @@ checkoutSelect.addEventListener('change', onCheckoutChange);
 var offers = generateOffers(OFFERS_NUMBER);
 disablePage();
 validateRooms();
+validatePrice();
