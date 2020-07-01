@@ -6,21 +6,21 @@
   // Спрятать карту
   var disablePage = function () {
     window.form.insertDefaultAddressDisabled();
-    window.form.disableFormElements(window.form.adFormFieldsets);
-    window.form.disableFormElements(window.form.filtersFormElements);
+    window.form.disableElements(window.form.adFieldsets);
+    window.form.disableElements(window.form.filterElements);
     window.form.mainPin.addEventListener('keydown', onPinPress);
     window.form.mainPin.addEventListener('mousedown', onPinMousedown);
-    window.pin.clearPins();
+    window.pin.clear();
   };
 
   // Показать карту
   var enablePage = function () {
     window.pin.map.classList.remove('map--faded');
-    window.form.adForm.classList.remove('ad-form--disabled');
+    window.form.ad.classList.remove('ad-form--disabled');
     window.form.insertDefaultAddressEnabled();
-    window.pin.renderOfferPins(offers);
-    window.form.enableFormElements(window.form.adFormFieldsets);
-    window.form.enableFormElements(window.form.filtersFormElements);
+    window.pin.render(offers);
+    window.form.enableElements(window.form.adFieldsets);
+    window.form.enableElements(window.form.filterElements);
     window.form.mainPin.removeEventListener('keydown', onPinPress);
     window.form.mainPin.removeEventListener('mousedown', onPinMousedown);
   };

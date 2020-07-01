@@ -94,7 +94,7 @@
   };
 
   window.offerCard = {
-    renderOfferCard: renderOfferCard,
-    offerCardElements: offerCardElements
+    render: renderOfferCard,
+    elements: offerCardElements
   };
 })();

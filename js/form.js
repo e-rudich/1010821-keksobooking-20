@@ -132,14 +132,13 @@
   checkoutSelect.addEventListener('change', onCheckoutChange);
 
   window.form = {
-    filtersForm: filtersForm,
     insertDefaultAddressDisabled: insertDefaultAddressDisabled,
     insertDefaultAddressEnabled: insertDefaultAddressEnabled,
-    adFormFieldsets: adFormFieldsets,
-    filtersFormElements: filtersFormElements,
-    adForm: adForm,
-    disableFormElements: disableFormElements,
-    enableFormElements: enableFormElements,
+    adFieldsets: adFormFieldsets,
+    filterElements: filtersFormElements,
+    ad: adForm,
+    disableElements: disableFormElements,
+    enableElements: enableFormElements,
     validateRooms: validateRooms,
     validatePrice: validatePrice,
     mainPin: mainPin

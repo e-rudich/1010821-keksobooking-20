@@ -27,20 +27,20 @@
     };
 
     var openOfferCard = function () {
-      window.offerCard.renderOfferCard(offerPin);
-      window.offerCard.offerCardElements.style.display = 'block';
+      window.offerCard.render(offerPin);
+      window.offerCard.elements.style.display = 'block';
 
       document.addEventListener('keydown', onCardEscPress);
     };
 
     var closeOfferCard = function () {
-      window.offerCard.offerCardElements.style.display = 'none';
+      window.offerCard.elements.style.display = 'none';
 
       document.removeEventListener('keydown', onCardEscPress);
     };
 
     var offerCardToggle = function () {
-      var closeButton = window.offerCard.offerCardElements.querySelector('.popup__close');
+      var closeButton = window.offerCard.elements.querySelector('.popup__close');
 
       closeButton.addEventListener('click', function () {
         closeOfferCard();
@@ -81,8 +81,8 @@
 
   window.pin = {
     map: map,
-    renderOfferPins: renderOfferPins,
-    clearPins: clearPins
+    render: renderOfferPins,
+    clear: clearPins
   };
 
 })();
