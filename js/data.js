@@ -120,6 +120,10 @@
     renderPhotos: renderPhotos,
     switchGuests: switchGuests,
     switchRooms: switchRooms,
-    roomTypes: roomTypes
+    roomTypes: roomTypes,
+    locationYMin: LOCATION_Y_MIN,
+    locationYMax: LOCATION_Y_MAX,
+    loactionXMin: LOCATION_X_MIN,
+    locationXMax: locationXMax
   };
 })();
