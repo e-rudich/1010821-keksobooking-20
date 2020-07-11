@@ -5,7 +5,6 @@
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
   var map = document.querySelector('.map');
-  var renderedPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
 
   // Отрисовать метку объявления, открыть,закрыть объявление
   var renderOfferPin = function (offerPin) {
@@ -74,15 +73,22 @@
 
   // Очистить пины
   var clearPins = function () {
+    var renderedPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
     renderedPins.forEach(function (pin) {
       pin.remove();
     });
   };
 
+  var setMainPinPosition = function () {
+    window.form.mainPin.style.left = Math.round(window.pin.map.offsetWidth / 2) + 'px';
+    window.form.mainPin.style.top = Math.round(window.pin.map.offsetHeight / 2) + 'px';
+  };
+
   window.pin = {
     map: map,
     render: renderOfferPins,
-    clear: clearPins
+    clear: clearPins,
+    setDefualutPosition: setMainPinPosition
   };
 
 })();
