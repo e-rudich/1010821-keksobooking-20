@@ -71,7 +71,6 @@
   };
 
   window.data = {
-    // generateOffers: generateOffers,
     renderFeatures: renderFeatures,
     renderPhotos: renderPhotos,
     switchGuests: switchGuests,

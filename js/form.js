@@ -108,7 +108,6 @@
     checkinSelect.value = checkoutSelect.value;
   };
 
-
   // Неактивное состояние полей и активация
   var adFormFieldsets = adForm.querySelectorAll('fieldset');
   var filtersFormElements = filtersForm.querySelectorAll('input, select');
@@ -137,6 +136,7 @@
     adFieldsets: adFormFieldsets,
     filterElements: filtersFormElements,
     ad: adForm,
+    filters: filtersForm,
     disableElements: disableFormElements,
     enableElements: enableFormElements,
     validateRooms: validateRooms,
