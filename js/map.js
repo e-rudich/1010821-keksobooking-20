@@ -150,8 +150,7 @@
   });
 
   resetFormButton.addEventListener('click', function () {
-    window.form.ad.reset();
-    window.form.filters.reset();
+    disablePage();
   });
 
   disablePage();
