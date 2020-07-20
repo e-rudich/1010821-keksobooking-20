@@ -7,16 +7,12 @@
   var guestsSelect = window.form.filters.querySelector('#housing-guests');
   var featuresChoice = window.form.filters.querySelector('#housing-features');
 
-  var checkType = function () {
+  var checkType = function (offerParameter) {
     var typeValue = typeSelect.value;
-    var filteredOffers = window.offers.filter(function (offer) {
-      if (typeValue === 'any') {
-        return true;
-      }
-      return typeValue === offer.offer.type;
-    });
-    window.pin.render(filteredOffers);
-    window.offerCard.elements.style.display = 'none';
+    if (typeValue === 'any') {
+      return true;
+    }
+    return typeValue === offerParameter;
   };
 
   var priceRange = {
@@ -24,68 +20,54 @@
     MAX: 50000
   };
 
-  var checkPrice = function () {
-    var filteredOffers = window.offers.filter(function (offer) {
-      var priceValue = priceSelect.value;
-      switch (priceValue) {
-        case 'low':
-          return offer.offer.price <= priceRange.MIN;
-        case 'middle':
-          return offer.offer.price > priceRange.MIN && offer.offer.price < priceRange.MAX;
-        case 'high':
-          return offer.offer.price >= priceRange.MAX;
-        default:
-          return true;
-      }
-    });
-    window.pin.render(filteredOffers);
-    window.offerCard.elements.style.display = 'none';
+  var checkPrice = function (offerParameter) {
+    var priceValue = priceSelect.value;
+    switch (priceValue) {
+      case 'low':
+        return offerParameter <= priceRange.MIN;
+      case 'middle':
+        return offerParameter > priceRange.MIN && offerParameter < priceRange.MAX;
+      case 'high':
+        return offerParameter >= priceRange.MAX;
+      default:
+        return true;
+    }
   };
 
-  var checkRooms = function () {
+  var checkRooms = function (offerParameter) {
     var roomValue = roomsSelect.value;
-    var filteredOffers = window.offers.filter(function (offer) {
-      if (roomValue === 'any') {
-        return true;
-      }
-      return roomValue === String(offer.offer.rooms);
-    });
-    window.pin.render(filteredOffers);
-    window.offerCard.elements.style.display = 'none';
+    if (roomValue === 'any') {
+      return true;
+    }
+    return roomValue === String(offerParameter);
   };
 
-  var checkGuests = function () {
+  var checkGuests = function (offerParameter) {
     var guestsValue = guestsSelect.value;
-    var filteredOffers = window.offers.filter(function (offer) {
-      if (guestsValue === 'any') {
-        return true;
-      }
-      return guestsValue === String(offer.offer.guests);
-    });
-    window.pin.render(filteredOffers);
-    window.offerCard.elements.style.display = 'none';
+    if (guestsValue === 'any') {
+      return true;
+    }
+    return guestsValue === String(offerParameter);
   };
 
-  var checkFeatures = function () {
+  var checkFeatures = function (offerParameter) {
     var checkedFeatures = Array.from(featuresChoice.querySelectorAll('input:checked'));
-    var filteredOffers = window.offers.filter(function (offer) {
-      return checkedFeatures.every(function (feature) {
-        return offer.offer.features.includes(feature.value);
-      });
+    return checkedFeatures.every(function (feature) {
+      return offerParameter.includes(feature.value);
     });
-    window.pin.render(filteredOffers);
-    window.offerCard.elements.style.display = 'none';
   };
 
-  typeSelect.addEventListener('change', checkType);
-  priceSelect.addEventListener('change', checkPrice);
-  roomsSelect.addEventListener('change', checkRooms);
-  guestsSelect.addEventListener('change', checkGuests);
-  featuresChoice.addEventListener('change', checkFeatures);
+  var filterAll = function (offers) {
+    return offers.filter(function (offer) {
+      return checkType(offer.offer.type) && checkPrice(offer.offer.price) && checkRooms(offer.offer.rooms) && checkGuests(offer.offer.guests) && checkFeatures(offer.offer.features);
+    });
+  };
 
-  // var filterAll = function () {
-  //   return checkType() && checkPrice() && checkFeatures() && checkRooms() && checkGuests();
-  // };
-  // window.form.filters.addEventListener('change', filterAll);
-
+  window.form.filters.addEventListener('change', function () {
+    window.debounce(function () {
+      var filteredOffers = filterAll(window.offers);
+      window.pin.render(filteredOffers);
+      window.offerCard.elements.style.display = 'none';
+    })();
+  });
 })();
