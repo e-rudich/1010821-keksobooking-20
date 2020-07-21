@@ -26,6 +26,7 @@
     window.form.ad.reset();
     window.form.filters.reset();
     window.form.insertDefaultAddressDisabled();
+    window.preview.clearFormImages();
     window.offerCard.elements.style.display = 'none';
   };
 
