@@ -2,20 +2,72 @@
 
 (function () {
   var typeSelect = window.form.filters.querySelector('#housing-type');
-  // var priceSelect = window.form.filters.querySelector('#housing-price');
-  // var roomsSelect = window.form.filters.querySelector('#housing-rooms');
-  // var guestsSelect = window.form.filters.querySelector('#housing-guests');
-  // var featuresChoice = window.form.filters.querySelector('#housing-features');
+  var priceSelect = window.form.filters.querySelector('#housing-price');
+  var roomsSelect = window.form.filters.querySelector('#housing-rooms');
+  var guestsSelect = window.form.filters.querySelector('#housing-guests');
+  var featuresChoice = window.form.filters.querySelector('#housing-features');
 
-  typeSelect.addEventListener('change', function () {
+  var checkType = function (offerParameter) {
     var typeValue = typeSelect.value;
-    var filteredOffers = window.offers.filter(function (offer) {
-      if (typeValue === 'any') {
+    if (typeValue === 'any') {
+      return true;
+    }
+    return typeValue === offerParameter;
+  };
+
+  var priceRange = {
+    MIN: 10000,
+    MAX: 50000
+  };
+
+  var checkPrice = function (offerParameter) {
+    var priceValue = priceSelect.value;
+    switch (priceValue) {
+      case 'low':
+        return offerParameter <= priceRange.MIN;
+      case 'middle':
+        return offerParameter > priceRange.MIN && offerParameter < priceRange.MAX;
+      case 'high':
+        return offerParameter >= priceRange.MAX;
+      default:
         return true;
-      }
-      return typeValue === offer.offer.type;
+    }
+  };
+
+  var checkRooms = function (offerParameter) {
+    var roomValue = roomsSelect.value;
+    if (roomValue === 'any') {
+      return true;
+    }
+    return roomValue === String(offerParameter);
+  };
+
+  var checkGuests = function (offerParameter) {
+    var guestsValue = guestsSelect.value;
+    if (guestsValue === 'any') {
+      return true;
+    }
+    return guestsValue === String(offerParameter);
+  };
+
+  var checkFeatures = function (offerParameter) {
+    var checkedFeatures = Array.from(featuresChoice.querySelectorAll('input:checked'));
+    return checkedFeatures.every(function (feature) {
+      return offerParameter.includes(feature.value);
     });
-    window.pin.render(filteredOffers);
-    window.offerCard.elements.style.display = 'none';
+  };
+
+  var filterAll = function (offers) {
+    return offers.filter(function (offer) {
+      return checkType(offer.offer.type) && checkPrice(offer.offer.price) && checkRooms(offer.offer.rooms) && checkGuests(offer.offer.guests) && checkFeatures(offer.offer.features);
+    });
+  };
+
+  window.form.filters.addEventListener('change', function () {
+    window.debounce(function () {
+      var filteredOffers = filterAll(window.offers);
+      window.pin.render(filteredOffers);
+      window.offerCard.elements.style.display = 'none';
+    })();
   });
 })();
