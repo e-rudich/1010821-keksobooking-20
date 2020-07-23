@@ -12,6 +12,8 @@
     .content
     .querySelector('.success');
 
+  var main = document.querySelector('main');
+
   // Спрятать карту
   var disablePage = function () {
     window.pin.map.classList.add('map--faded');
@@ -43,8 +45,8 @@
     window.backend.load(onSuccessLoad, onErrorLoad);
   };
 
-  var onPinPress = function (evt) {
-    if (evt.key === 'Enter') {
+  var onPinPress = function () {
+    if (window.utils.isEnterPressed) {
       enablePage();
     }
   };
@@ -57,7 +59,7 @@
 
   // Работа с сообщением ошибки
   var onErrorEscPress = function (evt) {
-    if (evt.key === 'Escape') {
+    if (window.utils.isEscPressed) {
       evt.preventDefault();
       closeError();
     }
@@ -87,7 +89,7 @@
     var messageText = errorElement.querySelector('.error__message');
     messageText.textContent = errorMessage;
 
-    var message = document.querySelector('main').appendChild(errorMessageTemplate);
+    var message = main.appendChild(errorMessageTemplate);
     var errorButton = message.querySelector('.error__button');
 
     document.addEventListener('keydown', onErrorEscPress);
@@ -97,7 +99,7 @@
 
   // Работа с сообщением успеха
   var onSuccessEscPress = function (evt) {
-    if (evt.key === 'Escape') {
+    if (window.utils.isEscPressed) {
       evt.preventDefault();
       closeSuccess();
     }
@@ -123,7 +125,7 @@
     var messageText = successElement.querySelector('.success__message');
     messageText.textContent = successMessage;
 
-    document.querySelector('main').appendChild(successMessageTemplate);
+    main.appendChild(successMessageTemplate);
 
     document.addEventListener('keydown', onSuccessEscPress);
     document.addEventListener('click', onSuccessClick);

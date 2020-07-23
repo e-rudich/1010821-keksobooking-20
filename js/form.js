@@ -78,7 +78,7 @@
 
   var validatePrice = function () {
     priceInput.min = priceRoomCompliance[(typeSelect.value)];
-    priceInput.value = priceRoomCompliance[(typeSelect.value)];
+    priceInput.placeholder = priceRoomCompliance[(typeSelect.value)];
   };
 
   var onTypeChange = function () {
@@ -90,9 +90,9 @@
     var roomsCount = roomsSelect.value;
 
     if (capacityRoomsError[roomsCount].guests.includes(guestsCount)) {
-      roomsSelect.setCustomValidity('');
+      capacitySelect.setCustomValidity('');
     } else {
-      roomsSelect.setCustomValidity(capacityRoomsError[roomsCount].errorText);
+      capacitySelect.setCustomValidity(capacityRoomsError[roomsCount].errorText);
     }
   };
 

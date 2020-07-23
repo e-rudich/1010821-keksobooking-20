@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+
+  var FILTER_DEFAULT_VALUE = 'any';
+
   var typeSelect = window.form.filters.querySelector('#housing-type');
   var priceSelect = window.form.filters.querySelector('#housing-price');
   var roomsSelect = window.form.filters.querySelector('#housing-rooms');
@@ -8,11 +11,7 @@
   var featuresChoice = window.form.filters.querySelector('#housing-features');
 
   var checkType = function (offerParameter) {
-    var typeValue = typeSelect.value;
-    if (typeValue === 'any') {
-      return true;
-    }
-    return typeValue === offerParameter;
+    return typeSelect.value === FILTER_DEFAULT_VALUE || typeSelect.value === offerParameter;
   };
 
   var priceRange = {
@@ -35,19 +34,11 @@
   };
 
   var checkRooms = function (offerParameter) {
-    var roomValue = roomsSelect.value;
-    if (roomValue === 'any') {
-      return true;
-    }
-    return roomValue === String(offerParameter);
+    return roomsSelect.value === FILTER_DEFAULT_VALUE || roomsSelect.value === String(offerParameter);
   };
 
   var checkGuests = function (offerParameter) {
-    var guestsValue = guestsSelect.value;
-    if (guestsValue === 'any') {
-      return true;
-    }
-    return guestsValue === String(offerParameter);
+    return guestsSelect.value === FILTER_DEFAULT_VALUE || guestsSelect.value === String(offerParameter);
   };
 
   var checkFeatures = function (offerParameter) {
